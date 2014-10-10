@@ -1,3 +1,4 @@
+var utils = require(__dirname + '/../lib/utils');
 var logger = require(__dirname + '/../lib/logger');
 var getopt = require('node-getopt');
 var readline = require('readline');
@@ -8,11 +9,11 @@ var ELSQUERY = require(__dirname + '/../lib/ElsQuery').ElsQuery;
 ** V1 elasticsearch-console
 **
 ** show indexes;
-** db.index.find(query, type, options);
-** db.index.insert(query, type, options);
-** db.index.remove(query, type, options);
-** db.index.update(id, query, options);
-** db.index.count(query, type);
+** find --query (query, type, options);
+** insert --query (query, type, options);
+** remove --query (query, type, options);
+** update --query (id, query, options);
+** count (query, type);
 ** ping
 */
 
@@ -46,10 +47,37 @@ new ELSQUERY(function(tmpQuery) {
     elsQuery = tmpQuery;
 });
 
+function getParams(cmd) {
+    console.log('getParams');
+}
 
-var handleDB = function(elsClient, cmd, callback) {
-    logger.info('handleDB');
-    callback();
+var handleFind = function(elsClient, cmd, callback) {
+    logger.info('handleFind');
+    getParams(cmd);
+    /*
+    elsQuery.generate(type, query, null, {term: true}, function(err, queryELS) {
+	callback(err, queryELS);
+	elsQuery.deleteHandle(0, true);
+	elsClient.search(index, queryELS, null, function(err, res) {
+	    callback();
+	});
+    });
+    */
+};
+
+var handleRemove = function(elsClient, cmd, callback) {
+    logger.info('handleRemove');
+    getParams(cmd);
+};
+
+var handleUpdate = function(elsClient, cmd, callback) {
+    logger.info('handleUpdate');
+    getParams(cmd);
+};
+
+var handleInsert = function(elsClient, cmd, callback) {
+    logger.info('handleInsert');
+    getParams(cmd);
 };
 
 var handlePing = function(elsClient, cmd, callback) {
@@ -68,37 +96,37 @@ var handlePing = function(elsClient, cmd, callback) {
 }
 
 var execCmd = {
-    'db': handleDB,
-    'ping': handlePing
+    // ELS server infos
+    'ping': handlePing,
+
+    // ELS db actions
+    'find': handleFind,
+    'remove': handleRemove,
+    'update': handleUpdate,
+    'insert': handleInsert
 };
 
 function getCmd(line) {
     var results = [];
     var cmds = line.split(';');
-
+    
     for (i in cmds) {
-	results[i] = [];
 	cmdLine = cmds[i].split(' ');
-	for (j in cmdLine) {
-	    cmd = cmdLine[j].split('.');
-	    for (k in cmd) {
-		if (cmd[k])
-		    results[i].push(cmd[k]);
-	    }
-	}
+	results.push(cmdLine);
     }
     return (results);
 }
 
 rl.on('line', function(line) {
-    var cmds = getCmd(line);
+    var lineStrimed = utils.trim(line);
+    var cmds = getCmd(lineStrimed);
     for (cmd in cmds) {
-	var baseCmd = cmds[cmd] ? cmds[cmd][0] : null;
+	var baseCmd = cmds[cmd] ? utils.trim(cmds[cmd][0]) : null;
 	if (baseCmd && execCmd[baseCmd]) {
 	    execCmd[baseCmd](elsClient, cmds[cmd], function() {
 		rl.prompt();
 	    });
-	} else if (baseCmd) {
+	} else if (baseCmd && baseCmd != '') {
 	    console.log('unknow command', baseCmd);
 	}
     }
