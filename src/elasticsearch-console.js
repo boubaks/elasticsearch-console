@@ -2,6 +2,7 @@ var utils = require(__dirname + '/../lib/utils');
 var logger = require(__dirname + '/../lib/logger');
 var getopt = require('node-getopt');
 var readline = require('readline');
+var exec = require(__dirname + '/execution');
 var ELSCLIENT = require(__dirname + '/../lib/ElsClient').ElsClient;
 var ELSQUERY = require(__dirname + '/../lib/ElsQuery').ElsQuery;
 
@@ -47,81 +48,33 @@ new ELSQUERY(function(tmpQuery) {
     elsQuery = tmpQuery;
 });
 
-function getParams(cmd) {
-    console.log('getParams');
-}
-
-var handleFind = function(elsClient, cmd, callback) {
-    logger.info('handleFind');
-    getParams(cmd);
-    /*
-    elsQuery.generate(type, query, null, {term: true}, function(err, queryELS) {
-	callback(err, queryELS);
-	elsQuery.deleteHandle(0, true);
-	elsClient.search(index, queryELS, null, function(err, res) {
-	    callback();
-	});
-    });
-    */
-};
-
-var handleRemove = function(elsClient, cmd, callback) {
-    logger.info('handleRemove');
-    getParams(cmd);
-};
-
-var handleUpdate = function(elsClient, cmd, callback) {
-    logger.info('handleUpdate');
-    getParams(cmd);
-};
-
-var handleInsert = function(elsClient, cmd, callback) {
-    logger.info('handleInsert');
-    getParams(cmd);
-};
-
-var handlePing = function(elsClient, cmd, callback) {
-    elsClient._client.ping({
-	requestTimeout: 1000,
-	hello: "elasticsearch!"
-    }, function (err, response, status) {
-	if (err) {
-            logger.error('elasticsearch cluster is down!', err);
-            callback();
-	} else {
-            logger.info("ELS connected - status: " + status);
-	    callback();
-	}
-    });
-}
 
 var execCmd = {
     // ELS server infos
-    'ping': handlePing,
+    'ping': exec.handlePing,
 
     // ELS db actions
-    'find': handleFind,
-    'remove': handleRemove,
-    'update': handleUpdate,
-    'insert': handleInsert
+    'find': exec.handleFind,
+    'remove': exec.handleRemove,
+    'update': exec.handleUpdate,
+    'insert': exec.handleInsert
 };
 
 function getCmd(line) {
     var results = [];
     var cmds = line.split(';');
-    
+
     for (i in cmds) {
-	cmdLine = cmds[i].split(' ');
+	var cmdLine = utils.trimToTab(cmds[i]);
 	results.push(cmdLine);
     }
     return (results);
 }
 
 rl.on('line', function(line) {
-    var lineStrimed = utils.trim(line);
-    var cmds = getCmd(lineStrimed);
+    var cmds = getCmd(line);
     for (cmd in cmds) {
-	var baseCmd = cmds[cmd] ? utils.trim(cmds[cmd][0]) : null;
+	var baseCmd = cmds[cmd] ? cmds[cmd][0] : null;
 	if (baseCmd && execCmd[baseCmd]) {
 	    execCmd[baseCmd](elsClient, cmds[cmd], function() {
 		rl.prompt();
