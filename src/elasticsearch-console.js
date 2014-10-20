@@ -4,7 +4,6 @@ var getopt = require('node-getopt');
 var readline = require('readline');
 var exec = require(__dirname + '/execution');
 var ELSCLIENT = require(__dirname + '/../lib/ElsClient').ElsClient;
-var ELSQUERY = require(__dirname + '/../lib/ElsQuery').ElsQuery;
 
 /*
 ** V1 elasticsearch-console
@@ -36,7 +35,6 @@ var port = opt.options.port ? opt.options.port : 9200;
 var host = opt.options.host ? opt.options.host : 'localhost';
 
 var elsClient = undefined;
-var elsQuery = undefined;
 new ELSCLIENT(host, port, function(tmpClient, msg) {
     if (!tmpClient)
 	throw('Couldn\'t connect to ELS');
@@ -44,10 +42,27 @@ new ELSCLIENT(host, port, function(tmpClient, msg) {
     elsClient = tmpClient;
     rl.prompt();
 });
-new ELSQUERY(function(tmpQuery) {
-    elsQuery = tmpQuery;
-});
 
+var showHelp = function() {
+    console.log(' ------------------------------------------------------');
+    console.log('| ELASTICSEARCH-CONSOLE                     by boubaks |');
+    console.log(' ------------------------------------------------------');
+    console.log('');
+    console.log('ping :          show if the console is connected to ELS');
+    console.log('--------------------------------------------------------');
+    console.log('find :          find the data that you want');
+    console.log('       params : --type, --query, --index, --options');
+    console.log('--------------------------------------------------------');
+    console.log('remove :        remove the data that you want');
+    console.log('       params : --type, --query, --index');
+    console.log('--------------------------------------------------------');
+    console.log('update :        update the data that you want');
+    console.log('       params : --type, --query, --index, --object');
+    console.log('--------------------------------------------------------');
+    console.log('insert :        find the data that you want');
+    console.log('       params : --type, --index, --object');
+    console.log('--------------------------------------------------------');
+};
 
 var execCmd = {
     // ELS server infos
@@ -57,7 +72,10 @@ var execCmd = {
     'find': exec.handleFind,
     'remove': exec.handleRemove,
     'update': exec.handleUpdate,
-    'insert': exec.handleInsert
+    'insert': exec.handleInsert,
+
+    // HELP
+    'help': showHelp
 };
 
 function getCmd(line) {
