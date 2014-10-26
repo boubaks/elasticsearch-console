@@ -48,7 +48,11 @@ var showHelp = function() {
     console.log('| ELASTICSEARCH-CONSOLE                     by boubaks |');
     console.log(' ------------------------------------------------------');
     console.log('');
+    console.log('exit :          to exit the elastic console');
+    console.log('');
     console.log('ping :          show if the console is connected to ELS');
+    console.log('');
+    console.log('show :          show informations about ELS (indexes, clusters infos, ...)');
     console.log('--------------------------------------------------------');
     console.log('find :          find the data that you want');
     console.log('       params : --type, --query, --index, --options');
@@ -62,11 +66,14 @@ var showHelp = function() {
     console.log('insert :        find the data that you want');
     console.log('       params : --type, --index, --object');
     console.log('--------------------------------------------------------');
+    console.log('');
 };
 
 var execCmd = {
     // ELS server infos
+    'exit': exec.exit,
     'ping': exec.handlePing,
+    'show': exec.showInfo,
 
     // ELS db actions
     'find': exec.handleFind,

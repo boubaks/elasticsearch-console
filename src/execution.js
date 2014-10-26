@@ -9,6 +9,7 @@ new ELSQUERY(function(tmpQuery) {
 });
 
 var opt = getopt.create([
+    ['', 'queryELS=ARG', 'query'],
     ['', 'query=ARG', 'query'],
     ['', 'type=ARG', 'type'],
     ['', 'index=ARG', 'index'],
@@ -33,6 +34,38 @@ function getParams(cmd, callback) {
     }
 }
 
+function showInfoHelp(callback) {
+    console.log('show options:')
+    console.log('\t-info');
+    console.log('\t-indexes');
+    console.log('');
+    callback();
+}
+
+exports.exit = function(elsClient, cmd, callback) {
+    console.log('Bye bye !');
+    process.kill();
+}
+
+exports.showInfo = function(elsClient, cmd, callback) {
+    logger.info('showInfo');
+    getParams(cmd, function(err, opt) {
+	var param = opt.argv[1] ? opt.argv[1] : null;
+	if (param) {
+	    if (param == 'info') {
+		elsClient.info(function(error, response) {
+		    console.log(response);
+		    callback();
+		});
+	    } else {
+		showInfoHelp(callback);
+	    }
+	} else {
+	    showInfoHelp(callback);
+	}
+    });
+}
+
 exports.handleFind = function(elsClient, cmd, callback) {
     logger.info('handleFind');
     getParams(cmd, function(err, opt) {
@@ -50,10 +83,11 @@ exports.handleFind = function(elsClient, cmd, callback) {
 	if (type && err == false) {
 	    try {
 		var queryJSON = query.length > 0 ? JSON.parse(query) : query;
-		elsQuery.generate(type, queryJSON, null, {term: true}, function(err, queryELS) {
+		elsQuery.generate(type, queryJSON, null, {term: true}, function(err, queryGenerated) {
 		    if (err)
-			callback(err, queryELS);
+			callback(err, queryGenerated);
 		    elsQuery.deleteHandle(0, true);
+		    var queryELS = opt.options.queryELS ? opt.options.queryELS : queryGenerated;
 		    console.log('QUERY ==>', JSON.stringify(queryELS));
 		    elsClient.search(index, queryELS, options, function(err, res) {
 			if (err) {
@@ -71,7 +105,7 @@ exports.handleFind = function(elsClient, cmd, callback) {
 		callback();
 	    }
 	} else {
-	    console.log('find required type');
+	    console.log('find required --type [--index --query -- options]');
 	    callback();
 	}
     });
@@ -95,8 +129,11 @@ exports.handleRemove = function(elsClient, cmd, callback) {
 		callback();
 	    });
 	} else if (index && type) {
-	    elsQuery.generate(type, query, null, {term: true}, function(err, queryELS) {
+	    console.log('DAMN', query);
+	    var queryJSON = query.length > 0 ? JSON.parse(query) : query;
+	    elsQuery.generate(type, queryJSON, null, {term: true}, function(err, queryELS) {
 		console.log('deleteByQuery', index, type, queryELS);
+		elsQuery.deleteHandle(0, true);
 		elsClient.deleteByQuery(index, type, queryELS, function(err, res) {
 		    if (err)
 			console.log(err);
@@ -106,7 +143,7 @@ exports.handleRemove = function(elsClient, cmd, callback) {
 		});
 	    });
 	} else {
-	    console.log('remove required --type');
+	    console.log('remove required --type [--index --query]');
 	    callback();
 	}
     });
@@ -132,7 +169,7 @@ exports.handleUpdate = function(elsClient, cmd, callback) {
 		callback();
 	    });
 	} else {
-	    console.log('update required --index, --query (_id), --type & --object');
+	    console.log('update required --index --query(_id) --type --object');
 	    callback();
 	}
     });
@@ -154,7 +191,7 @@ exports.handleInsert = function(elsClient, cmd, callback) {
 		callback();
 	    });
 	} else {
-	    console.log('insert required --index, --type & --object');
+	    console.log('insert required --index --type --object');
 	    callback();
 	}
     });
