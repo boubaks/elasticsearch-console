@@ -129,10 +129,8 @@ exports.handleRemove = function(elsClient, cmd, callback) {
 		callback();
 	    });
 	} else if (index && type) {
-	    console.log('DAMN', query);
 	    var queryJSON = query.length > 0 ? JSON.parse(query) : query;
 	    elsQuery.generate(type, queryJSON, null, {term: true}, function(err, queryELS) {
-		console.log('deleteByQuery', index, type, queryELS);
 		elsQuery.deleteHandle(0, true);
 		elsClient.deleteByQuery(index, type, queryELS, function(err, res) {
 		    if (err)
