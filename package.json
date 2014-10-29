@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/boubaks/elasticsearch-console",
   "dependencies": {
+    "mongodb": "*",
     "node-getopt": "*",
     "elasticsearch": "*",
     "winston": "*",
