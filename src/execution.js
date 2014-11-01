@@ -47,6 +47,15 @@ exports.exit = function(elsClient, cmd, callback) {
     process.kill();
 }
 
+/* 
+** Action on ELS
+**
+** ==> show
+** ==> add
+** ==> edit
+** ==> delete
+*/
+
 exports.showInfo = function(elsClient, cmd, callback) {
     logger.info('showInfo');
     getParams(cmd, function(err, opt) {
@@ -55,6 +64,15 @@ exports.showInfo = function(elsClient, cmd, callback) {
 	    if (param == 'info') {
 		elsClient.info(function(error, response) {
 		    console.log(response);
+		    callback();
+		});
+	    } else if (param == 'indexes') {
+		elsClient.segments(function(error, response) {
+		    var indexes = [];
+		    for (param in response.indices) {
+			indexes.push(param);
+		    }
+		    console.log(indexes);
 		    callback();
 		});
 	    } else {
