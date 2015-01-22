@@ -111,6 +111,7 @@ exports.handleFind = function(elsClient, cmd, callback) {
 			if (err) {
 			    console.log(err);
 			} else if (res && res.hits && res.hits.total > 0) {
+				console.log('Total:', res.hits.total);
 			    console.log(res.hits.hits);
 			} else {
 			    console.log(res);
