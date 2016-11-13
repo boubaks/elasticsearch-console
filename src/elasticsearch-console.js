@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var utils = require(__dirname + '/../lib/utils');
 var logger = require(__dirname + '/../lib/logger');
 var getopt = require('node-getopt');

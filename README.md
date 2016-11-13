@@ -4,13 +4,18 @@ elasticsearch-console helps you to manage more faster your datas on elasticsearc
 ## Installation
 
 $> npm install -g elasticsearch-console
-==> To install every module and package that is necessary to launch elasticsearch-console
-    
 $> elasticsearch-console
-==> To launch elasticsearch-console
 
-## Installation
-npm install mongoelastic
+## Launch elasticsearch-console
+
+	$> elasticsearch-console --help
+	Usage: elasticsearch-console
+
+	  	-p, --port=ARG  port to connect to
+	      --host=ARG  server to connect to
+	  	-h, --help      display this help
+	  	-v, --version   show version
+
 
 ## How to use the elasticsearch-console
     

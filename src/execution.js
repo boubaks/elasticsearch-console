@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var logger = require(__dirname + '/../lib/logger');
 var getopt = require('node-getopt');
 
