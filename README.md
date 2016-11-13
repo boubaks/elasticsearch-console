@@ -13,7 +13,7 @@ $> elasticsearch-console
 	Usage: elasticsearch-console
 
 	  	-p, --port=ARG  port to connect to
-	      --host=ARG  server to connect to
+	    --host=ARG  server to connect to
 	  	-h, --help      display this help
 	  	-v, --version   show version
 
@@ -32,16 +32,16 @@ $> elasticsearch-console
 	show :          show informations about ELS (indexes, clusters infos, ...)
 	--------------------------------------------------------
 	find :          find the data that you want
-	       params : --type, --query, --index, --options
+	                params : --type, --query, --index, --options
 	--------------------------------------------------------
 	remove :        remove the data that you want
-	       params : --type, --query, --index
+	                params : --type, --query, --index
 	--------------------------------------------------------
 	update :        update the data that you want
-	       params : --type, --query, --index, --object
+	                params : --type, --query, --index, --object
 	--------------------------------------------------------
 	insert :        find the data that you want
-	       params : --type, --index, --object
+	                params : --type, --index, --object
 	--------------------------------------------------------
 
 	elasticsearch-console> 
