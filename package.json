@@ -1,8 +1,8 @@
 {
   "name": "elasticsearch-console",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "elasticsearch-console helps you to manage more faster your data on elasticsearch",
-  "main": "./src/elasticsearch-console.js",
+  "main": "./lib/elasticsearch-console.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,7 +18,6 @@
   "bin": {
     "elasticsearch-console": "./src/elasticsearch-console.js"
   },
-  "main" : "./lib/elasticsearch-console.js",
   "preferGlobal": "true",
   "homepage": "https://github.com/boubaks/elasticsearch-console",
   "dependencies": {
