@@ -1,12 +1,10 @@
 var logger = require(__dirname + '/../lib/logger');
 var getopt = require('node-getopt');
-var ELSQUERY = require(__dirname + '/../lib/ElsQuery').ElsQuery;
-var error = false;
 
-var elsQuery = undefined;
-new ELSQUERY(function(tmpQuery) {
-    elsQuery = tmpQuery;
-});
+var elsQuery = require('elasticsearch-query');
+var elsGeneratorQueries = new elsQuery();
+
+var error = false;
 
 var opt = getopt.create([
     ['', 'queryELS=ARG', 'query'],
@@ -27,10 +25,10 @@ function getParams(cmd, callback) {
 
     opt.parse(cmd);
     if (error == true) {
-	callback(error, opt.parsedOption);
-	error = false;
+		callback(error, opt.parsedOption);
+		error = false;
     } else {
-	callback(error, opt.parsedOption);
+		callback(error, opt.parsedOption);
     }
 }
 
@@ -44,7 +42,11 @@ function showInfoHelp(callback) {
 
 exports.exit = function(elsClient, cmd, callback) {
     console.log('Bye bye !');
-    process.kill();
+    if (process.pid) {
+	    process.kill(process.pid);
+	} else {
+		console.log('Error: invalid pid... try again');
+	}
 }
 
 /* 
@@ -101,10 +103,9 @@ exports.handleFind = function(elsClient, cmd, callback) {
 	if (type && err == false) {
 	    try {
 		var queryJSON = query.length > 0 ? JSON.parse(query) : query;
-		elsQuery.generate(type, queryJSON, null, {term: true}, function(err, queryGenerated) {
+		elsGeneratorQueries.generate(type, queryJSON, null, {term: true}, function(err, queryGenerated) {
 		    if (err)
 			callback(err, queryGenerated);
-		    elsQuery.deleteHandle(0, true);
 		    var queryELS = opt.options.queryELS ? opt.options.queryELS : queryGenerated;
 		    console.log('QUERY ==>', JSON.stringify(queryELS));
 		    elsClient.search(index, queryELS, options, function(err, res) {
@@ -149,8 +150,8 @@ exports.handleRemove = function(elsClient, cmd, callback) {
 	    });
 	} else if (index && type) {
 	    var queryJSON = query.length > 0 ? JSON.parse(query) : query;
-	    elsQuery.generate(type, queryJSON, null, {term: true}, function(err, queryELS) {
-		elsQuery.deleteHandle(0, true);
+	    elsGeneratorQueries.generate(type, queryJSON, null, {term: true}, function(err, queryELS) {
+		elsGeneratorQueries.deleteHandle(0, true);
 		elsClient.deleteByQuery(index, type, queryELS, function(err, res) {
 		    if (err)
 			console.log(err);

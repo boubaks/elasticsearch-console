@@ -3,7 +3,7 @@ var logger = require(__dirname + '/../lib/logger');
 var getopt = require('node-getopt');
 var readline = require('readline');
 var exec = require(__dirname + '/execution');
-var ELSCLIENT = require(__dirname + '/../lib/ElsClient').ElsClient;
+var elsClient = require('elasticsearch-client');
 
 /*
 ** V1 elasticsearch-console
@@ -34,12 +34,12 @@ var opt = getopt.create([
 var port = opt.options.port ? opt.options.port : 9200;
 var host = opt.options.host ? opt.options.host : 'localhost';
 
-var elsClient = undefined;
-new ELSCLIENT(host, port, function(tmpClient, msg) {
-    if (!tmpClient)
-	throw('Couldn\'t connect to ELS');
+new elsClient(host, port, function (client, msg) {
+    if (!client) {
+        throw('Couldn\'t connect to ELS');
+    }
     var scope = this;
-    elsClient = tmpClient;
+    elsClient = client;
     rl.prompt();
 });
 
@@ -114,5 +114,10 @@ rl.on('line', function(line) {
 rl.on('close', function() {
     console.log('Bye bye !');
     rl.close();
-    process.kill();
+    if (process.pid) {
+        process.kill(process.pid);
+    } else {
+        console.log('Error: invalid pid... try again');
+    }
+
 });
