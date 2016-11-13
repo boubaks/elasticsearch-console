@@ -51,4 +51,4 @@ $> elasticsearch-console
 ## Notes
 This module use elasticsearch-query for more easier query from elasticsearch.
 
-More informations on : https://github.com/boubaks/elasticsearch-query
+More information on : https://github.com/boubaks/elasticsearch-query

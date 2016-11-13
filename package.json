@@ -1,7 +1,7 @@
 {
   "name": "elasticsearch-console",
   "version": "0.0.0",
-  "description": "elasticsearch-console helps you to manage more faster your datas on elasticsearch",
+  "description": "elasticsearch-console helps you to manage more faster your data on elasticsearch",
   "main": "./src/elasticsearch-console.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
