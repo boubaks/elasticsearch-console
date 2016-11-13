@@ -12,10 +12,10 @@ $> elasticsearch-console
 	$> elasticsearch-console --help
 	Usage: elasticsearch-console
 
-	  	-p, --port=ARG  port to connect to
-	    --host=ARG  server to connect to
-	  	-h, --help      display this help
-	  	-v, --version   show version
+		-p, --port=ARG  port to connect to
+		--host=ARG  server to connect to
+		-h, --help      display this help
+		-v, --version   show version
 
 
 ## How to use the elasticsearch-console
