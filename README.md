@@ -4,6 +4,7 @@ elasticsearch-console helps you to manage more faster your datas on elasticsearc
 ## Installation
 
 $> npm install -g elasticsearch-console
+
 $> elasticsearch-console
 
 ## Launch elasticsearch-console
@@ -49,4 +50,5 @@ $> elasticsearch-console
   
 ## Notes
 This module use elasticsearch-query for more easier query from elasticsearch.
+
 More informations on : https://github.com/boubaks/elasticsearch-query
